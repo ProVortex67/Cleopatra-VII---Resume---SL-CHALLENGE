@@ -1,75 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ArrowUpRight, ChevronDown, Crown, Eye, Gem, Globe2, Menu, Shield, Sparkles, X } from 'lucide-react';
+import { ArrowUpRight, Crown, Gem, Globe2, Menu, Shield, Sparkles, X } from 'lucide-react';
 import './styles.css';
-
-const achievements = [
-  ['51 BCE', 'Assumed the throne', 'Became co-ruler of Ptolemaic Egypt and inherited a politically fragile kingdom.'],
-  ['48 BCE', 'Restored strategic position', 'Returned to Alexandria and rebuilt power through diplomacy, alliances and decisive action.'],
-  ['41 BCE', 'Eastern Mediterranean alliance', 'Forged a high-impact political and economic partnership with Mark Antony.'],
-  ['30 BCE', 'Legacy secured', 'Ended an era while leaving an enduring cultural and political imprint.'],
-];
-
-const skills = ['Diplomacy', 'Coalition building', 'Crisis leadership', 'Economic strategy', 'Public narrative', 'Cultural fluency', 'Negotiation', 'Political intelligence'];
-
-function App() {
-  const [menu, setMenu] = useState(false);
-  const [active, setActive] = useState('profile');
-  const [reveal, setReveal] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(entries => entries.forEach(e => e.isIntersecting && (e.target as HTMLElement).classList.add('visible')), { threshold: .12 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
-
-  const assessment = useMemo(() => [
-    ['Strategic vision', 94], ['Influence & communication', 97], ['Resilience', 95], ['Alliance management', 96], ['Economic leadership', 89]
-  ], []);
-
-  const go = (id: string) => { setActive(id); setMenu(false); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); };
-
-  return <div className="site">
-    <div className="grain" aria-hidden="true" />
-    <header className="nav">
-      <a className="brand" href="#top" onClick={() => setActive('profile')}><span className="brand-mark">𓂀</span><span>CLEOPATRA <b>VII</b></span></a>
-      <nav className={menu ? 'navlinks open' : 'navlinks'} aria-label="Primary navigation">
-        {['profile','achievements','leadership','assessment'].map(id => <button key={id} className={active === id ? 'active' : ''} onClick={() => go(id)}>{id}</button>)}
-      </nav>
-      <button className="menu" aria-label={menu ? 'Close navigation' : 'Open navigation'} aria-expanded={menu} onClick={() => setMenu(!menu)}>{menu ? <X /> : <Menu />}</button>
-    </header>
-
-    <main id="top">
-      <section id="profile" className="hero">
-        <div className="hero-copy reveal">
-          <p className="eyebrow"><span /> EXECUTIVE DOSSIER · ALEXANDRIA</p>
-          <h1>Cleopatra <em>VII</em></h1>
-          <p className="dek">Sovereign. Strategist. Diplomat.<br />A study in leadership under pressure.</p>
-          <div className="hero-actions"><button className="gold-btn" onClick={() => go('assessment')}>View modern assessment <ArrowUpRight size={17} /></button><button className="text-btn" onClick={() => go('leadership')}>Explore capabilities <ArrowUpRight size={17} /></button></div>
-          <div className="metrics"><div><strong>21</strong><span>years of rule</span></div><div><strong>8</strong><span>languages attributed</span></div><div><strong>∞</strong><span>cultural influence</span></div></div>
-        </div>
-        <div className="portrait-wrap reveal" aria-label="Stylized portrait illustration of Cleopatra VII">
-          <div className="halo" /><div className="portrait"><div className="crown">𓂀</div><div className="face"><div className="eye e1" /><div className="eye e2" /><div className="nose" /><div className="mouth" /></div><div className="hair" /></div>
-          <div className="seal"><Crown size={16} /><span>ROYAL<br />ARCHIVE</span></div>
-        </div>
-      </section>
-
-      <section className="quote reveal"><span>"</span><blockquote>She understood that power is not only inherited — it is negotiated, communicated, and continuously earned.</blockquote><cite>Modern Leadership Analysis</cite></section>
-
-      <section id="achievements" className="section reveal"><div className="section-head"><p className="eyebrow">01 · TRACK RECORD</p><h2>Results that <em>changed the map.</em></h2><p>From successful territorial negotiations to unprecedented alliances.</p></div><div className="timeline">{achievements.map(([year, title, desc]) => <div key={year} className="timeline-item"><div className="timeline-marker"><span>{year}</span></div><div className="timeline-content"><h4>{title}</h4><p>{desc}</p></div></div>)}</div></section>
-
-      <section id="leadership" className="dark-panel reveal"><div className="panel-intro"><p className="eyebrow">02 · LEADERSHIP STYLE</p><h2>High-context.<br /><em>High conviction.</em></h2><p>Adaptive, strategic, culturally intelligent.</p></div><div className="traits"><div><Shield size={24} /><h3>Resilience</h3><p>Led through political fragmentation and restored stability.</p></div><div><Globe2 size={24} /><h3>Strategic Alliance</h3><p>Built coalitions that shaped the Mediterranean.</p></div><div><Gem size={24} /><h3>Cultural Mastery</h3><p>Leveraged cultural fluency as a political asset.</p></div></div></section>
-
-      <section className="section reveal"><div className="section-head"><p className="eyebrow">03 · CORE CAPABILITIES</p><h2>A sovereign's <em>toolkit.</em></h2></div><div className="skills">{skills.map(skill => <span key={skill}><Sparkles size={14} />{skill}</span>)}</div></section>
-
-      <section id="assessment" className="assessment reveal"><div><p className="eyebrow">04 · CEO ASSESSMENT · 2026 LENS</p><h2>Would she thrive<br />in a <em>modern C-suite?</em></h2><p>Remove the crown, keep the strategic vision.</p></div><div className="assessment-grid">{assessment.map(([label, val]) => <div key={label}><div className="bar"><div className="fill" style={{width: `${val}%`}}></div></div><span>{label}</span><strong>{val}</strong></div>)}</div></section>
-
-      <section className="challenges reveal"><div><p className="eyebrow">05 · CHALLENGES</p><h2>Leadership is never<br /><em>without a cost.</em></h2></div><div className="challenge-grid"><p><b>02</b> Complex political dynamics required constant vigilance.</p><p><b>03</b> External pressures tested resolve and strategic flexibility.</p><p><b>04</b> Legacy building amid existential threats.</p></div></section>
-
-      <section className="disclosure"><Sparkles size={17} /><div><b>AI-use disclosure</b><p>This interactive presentation was developed with AI assistance for research synthesis, copy structuring and design layout. All historical information and strategic analysis reflects documented historical record and modern leadership frameworks.</p></div></section>
-    </main>
-    <footer><span>𓂀 CLEOPATRA VII · EXECUTIVE ARCHIVE</span><span>DESIGNED FOR THE SL CHALLENGE · 2026</span></footer>
-  </div>
-}
-
-createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);
+const achievements = [['51 BCE','Assumed the throne','Became co-ruler of Ptolemaic Egypt and inherited a politically fragile kingdom.'],['48 BCE','Restored strategic position','Returned to Alexandria and rebuilt power through diplomacy, alliances and decisive action.'],['41 BCE','Eastern Mediterranean alliance','Forged a high-impact political and economic partnership with Mark Antony.'],['30 BCE','Legacy secured','Ended an era while leaving an enduring cultural and political imprint.']];
+const skills = ['Diplomacy','Coalition building','Crisis leadership','Economic strategy','Public narrative','Cultural fluency','Negotiation','Political intelligence'];
+function App(){const[menu,setMenu]=useState(false);const[active,setActive]=useState('profile');const[assessmentActive,setAssessmentActive]=useState(false);useEffect(()=>{const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting&&e.target instanceof HTMLElement)e.target.classList.add('visible');}),{threshold:.12});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));return()=>observer.disconnect();},[]);const assessment=useMemo(()=>[['Strategic vision',94],['Influence & communication',97],['Resilience',95],['Alliance management',96],['Economic leadership',89]],[]);const go=(id:string)=>{setActive(id);setMenu(false);document.getElementById(id)?.scrollIntoView({behavior:'smooth'});};return <div className="site"><div className="grain" aria-hidden="true"/><header className="nav"><a className="brand" href="#top" onClick={()=>setActive('profile')}><span className="brand-mark">𓂀</span><span>CLEOPATRA <b>VII</b></span></a><nav className={menu?'navlinks open':'navlinks'} aria-label="Primary navigation">{['profile','achievements','leadership','assessment'].map(id=><button key={id} className={active===id?'active':''} onClick={()=>go(id)}>{id}</button>)}</nav><button className="menu" aria-label={menu?'Close navigation':'Open navigation'} aria-expanded={menu} onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button></header><main id="top"><section id="profile" className="hero"><div className="hero-copy reveal"><p className="eyebrow"><span/> EXECUTIVE DOSSIER · ALEXANDRIA</p><h1>Cleopatra <em>VII</em></h1><p className="dek">Sovereign. Strategist. Diplomat.<br/>A study in leadership under pressure.</p><div className="hero-actions"><button className="gold-btn" onClick={()=>go('assessment')}>View modern assessment <ArrowUpRight size={17}/></button><button className="text-btn" onClick={()=>go('leadership')}>Explore capabilities <ArrowUpRight size={17}/></button></div><div className="metrics"><div><strong>21</strong><span>years of rule</span></div><div><strong>8</strong><span>languages attributed</span></div><div><strong>∞</strong><span>cultural influence</span></div></div></div><div className="portrait-wrap reveal" aria-label="Stylized portrait illustration of Cleopatra VII"><div className="halo"/><div className="portrait"><div className="crown">𓂀</div><div className="face"><div className="eye e1"/><div className="eye e2"/><div className="nose"/><div className="mouth"/></div><div className="hair"/></div><div className="seal"><Crown size={16}/><span>ROYAL<br/>ARCHIVE</span></div></div></section><section className="quote reveal"><span>"</span><blockquote>She understood that power is not only inherited — it is negotiated, communicated, and continuously earned.</blockquote><cite>Modern Leadership Analysis</cite></section><section id="achievements" className="section reveal"><div className="section-head"><p className="eyebrow">01 · TRACK RECORD</p><h2>Results that <em>changed the map.</em></h2><p>From successful territorial negotiations to unprecedented alliances.</p></div><div className="timeline">{achievements.map(([year,title,desc])=><div key={year} className="timeline-item"><div className="timeline-marker"><span>{year}</span></div><div className="timeline-content"><h4>{title}</h4><p>{desc}</p></div></div>)}</div></section><section id="leadership" className="dark-panel reveal"><div className="panel-intro"><p className="eyebrow">02 · LEADERSHIP STYLE</p><h2>High-context.<br/><em>High conviction.</em></h2><p>Adaptive, strategic, culturally intelligent.</p></div><div className="traits"><div><Shield size={24}/><h3>Resilience</h3><p>Led through political fragmentation and restored stability.</p></div><div><Globe2 size={24}/><h3>Strategic Alliance</h3><p>Built coalitions that shaped the Mediterranean.</p></div><div><Gem size={24}/><h3>Cultural Mastery</h3><p>Leveraged cultural fluency as a political asset.</p></div></div></section><section className="section reveal"><div className="section-head"><p className="eyebrow">03 · CORE CAPABILITIES</p><h2>A sovereign's <em>toolkit.</em></h2></div><div className="skills">{skills.map(skill=><span key={skill}><Sparkles size={14}/>{skill}</span>)}</div></section><section id="assessment" className="assessment reveal"><div><p className="eyebrow">04 · CEO ASSESSMENT · 2026 LENS</p><h2>Would she thrive<br/>in a <em>modern C-suite?</em></h2><p>Remove the crown, keep the strategic vision.</p><button className="outline-btn" onClick={()=>setAssessmentActive(!assessmentActive)}><Sparkles size={16}/> {assessmentActive?'Assessment active':'Activate assessment'}</button></div><div className="assessment-grid">{assessment.map(([label,val])=><div key={label}><div className="bar"><div className="fill" style={{width:`${val}%`}}/></div><span>{label}</span><strong>{val}</strong></div>)}</div></section><section className="challenges reveal"><div><p className="eyebrow">05 · CHALLENGES</p><h2>Leadership is never<br/><em>without a cost.</em></h2></div><div className="challenge-grid"><p><b>02</b> Complex political dynamics required constant vigilance.</p><p><b>03</b> External pressures tested resolve and strategic flexibility.</p><p><b>04</b> Legacy building amid existential threats.</p></div></section><section className="disclosure"><Sparkles size={17}/><div><b>AI-use disclosure</b><p>This interactive presentation was developed with AI assistance for research synthesis, copy structuring and design layout. All historical information and strategic analysis reflects documented historical record and modern leadership frameworks.</p></div></section></main><footer><span>𓂀 CLEOPATRA VII · EXECUTIVE ARCHIVE</span><span>DESIGNED FOR THE SL CHALLENGE · 2026</span></footer></div>}
+createRoot(document.getElementById('root')!).render(<React.StrictMode><App/></React.StrictMode>);

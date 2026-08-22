@@ -2,6 +2,12 @@
 
 A premium, responsive executive-profile website created for the **SL Challenge**, reframing Cleopatra VII as a modern CEO-level leadership case study.
 
+## Live site
+
+Once the GitHub Pages workflow completes, the site is available at:
+
+**https://provortex67.github.io/Cleopatra-VII---Resume---SL-CHALLENGE/**
+
 ## Challenge description
 
 Build a compelling executive resume / portfolio experience for Cleopatra VII that translates her historical leadership into a contemporary professional narrative. The experience should communicate her profile, leadership style, achievements, capabilities, challenges, and a modern CEO assessment while feeling polished, distinctive, accessible, and interactive.
@@ -51,6 +57,12 @@ Open the local Vite URL shown in the terminal.
 npm run build
 npm run preview
 ```
+
+## GitHub Pages deployment
+
+Deployment is automated with GitHub Actions. Every push to `main` runs the Vite production build and publishes `dist/` to GitHub Pages.
+
+If Pages has not been enabled yet, open **Repository Settings → Pages** and set the source to **GitHub Actions**. Then wait for the `Deploy to GitHub Pages` workflow to finish.
 
 ## Content note
 

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#03030a">
+<title>NEON//CORE — Gravity Protocol</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;height:100%;overflow:hidden;background:#03030a;color:#fff;font-family:Arial,sans-serif;touch-action:none}canvas{position:fixed;inset:0;width:100%;height:100%}#ui{position:fixed;inset:0;padding:20px;pointer-events:none}.logo{font-size:20px;font-weight:900;letter-spacing:5px;text-shadow:0 0 18px #00ffff}.logo span{color:#00ffff}.stats{position:absolute;right:20px;top:18px;text-align:right}.stat{font-size:10px;letter-spacing:2px;opacity:.7;margin-bottom:8px}.value{display:block;font-size:20px;font-weight:900;color:#00ffff;opacity:1}.center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;transition:.35s}.center.hidden{opacity:0;transform:translate(-50%,-45%);pointer-events:none}.center h1{font-size:clamp(38px,11vw,92px);letter-spacing:8px;text-shadow:0 0 12px #00ffff,0 0 38px #0077ff}.center p{margin-top:10px;font-size:11px;letter-spacing:4px;opacity:.65}.btn{margin-top:28px;pointer-events:auto;padding:14px 30px;background:transparent;color:#00ffff;border:1px solid #00ffff;font-weight:900;letter-spacing:3px;cursor:pointer;box-shadow:0 0 20px #00ffff33}.btn:hover{background:#00ffff;color:#000;box-shadow:0 0 35px #00ffff}.hint{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:2px;opacity:.4;white-space:nowrap}.energy{position:absolute;left:20px;bottom:20px;width:150px;height:3px;background:#ffffff22}.energy i{display:block;height:100%;width:100%;background:#00ffff;box-shadow:0 0 10px #00ffff}.danger{color:#ff398f!important}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+<div class="logo">NEON<span>//</span>CORE</div>
+<div class="stats"><div class="stat">SCORE<span class="value" id="score">0</span></div><div class="stat">COMBO<span class="value" id="combo">x1</span></div></div>
+<div class="center" id="menu"><h1 id="title">NEON//CORE</h1><p id="sub">GRAVITY PROTOCOL</p><button class="btn" id="start">INITIALIZE</button></div>
+<div class="energy"><i id="energy"></i></div><div class="hint">HOLD / TOUCH · MOVE THE CORE · CATCH THE SIGNALS</div>
+</div>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d'),scoreEl=document.getElementById('score'),comboEl=document.getElementById('combo'),energyEl=document.getElementById('energy'),menu=document.getElementById('menu'),start=document.getElementById('start');
+let W,H,playing=false,score=0,combo=1,energy=100,last=0,spawn=0,audio=null;
+const pointer={x:0,y:0,down:false},stars=[],signals=[],bits=[];
+function resize(){W=c.width=innerWidth*devicePixelRatio;H=c.height=innerHeight*devicePixelRatio;x.setTransform(1,0,0,1,0,0);x.scale(devicePixelRatio,devicePixelRatio);W=innerWidth;H=innerHeight;pointer.x=W/2;pointer.y=H/2}
+addEventListener('resize',resize);resize();
+for(let i=0;i<260;i++)stars.push({x:Math.random()*W,y:Math.random()*H,v:Math.random()*.7+.1,r:Math.random()*1.5+.2});
+function tone(f){try{audio??=new AudioContext();const o=audio.createOscillator(),g=audio.createGain();o.frequency.value=f;g.gain.setValueAtTime(.06,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.13);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.13)}catch(e){}}
+function signal(){signals.push({x:Math.random()*W,y:Math.random()*H,r:7+Math.random()*5,a:0,life:1,phase:Math.random()*6})}
+function burst(px,py){for(let i=0;i<18;i++){let a=Math.random()*Math.PI*2,s=Math.random()*6+2;bits.push({x:px,y:py,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:1})}}
+function startGame(){playing=true;score=0;combo=1;energy=100;signals.length=0;bits.length=0;menu.classList.add('hidden');tone(700);signal();}
+function gameOver(){playing=false;menu.classList.remove('hidden');document.getElementById('title').textContent='CORE OFFLINE';document.getElementById('sub').textContent='FINAL SCORE · '+score;start.textContent='REBOOT';tone(120)}
+function pointerMove(e){pointer.x=e.clientX;pointer.y=e.clientY}
+c.addEventListener('pointermove',pointerMove);c.addEventListener('pointerdown',e=>{pointer.down=true;pointerMove(e);tone(550)});addEventListener('pointerup',()=>pointer.down=false);start.onclick=startGame;
+function drawBackground(t){x.fillStyle='rgba(3,3,10,.24)';x.fillRect(0,0,W,H);for(const s of stars){s.y+=s.v;if(s.y>H)s.y=0;x.globalAlpha=.25+s.v/2;x.fillStyle='#fff';x.fillRect(s.x,s.y,s.r,s.r)}x.globalAlpha=1}
+function core(t){let px=pointer.x,py=pointer.y,p=Math.sin(t*.006)*7,r=30+p;let g=x.createRadialGradient(px,py,1,px,py,110);g.addColorStop(0,'rgba(255,255,255,.9)');g.addColorStop(.15,'rgba(0,255,255,.45)');g.addColorStop(1,'rgba(0,255,255,0)');x.fillStyle=g;x.beginPath();x.arc(px,py,110,0,Math.PI*2);x.fill();x.beginPath();x.arc(px,py,r,0,Math.PI*2);x.strokeStyle='#00ffff';x.lineWidth=2;x.shadowBlur=28;x.shadowColor='#00ffff';x.stroke();x.shadowBlur=0;for(let i=0;i<3;i++){x.beginPath();x.arc(px,py,r+14+i*9, t*.0008*(i%2?-1:1),t*.0008*(i%2?-1:1)+Math.PI*1.35);x.strokeStyle='rgba(0,255,255,.28)';x.stroke()}}
+function update(dt,t){spawn-=dt;if(spawn<=0){signal();spawn=Math.max(260,900-score*1.5)}energy-=dt*.006;if(energy<=0)gameOver();for(let i=signals.length-1;i>=0;i--){let s=signals[i];s.a+=dt*.004;s.phase+=dt*.006;let dx=pointer.x-s.x,dy=pointer.y-s.y,d=Math.hypot(dx,dy);if(pointer.down&&d<230&&d>1){let f=(1-d/230)*.9;s.x+=dx/d*f*dt*.08;s.y+=dy/d*f*dt*.08}s.r+=Math.sin(s.phase)*.03;if(pointer.down&&d<42){score+=10*combo;combo=Math.min(99,combo+1);energy=Math.min(100,energy+7);burst(s.x,s.y);tone(250+combo*24);signals.splice(i,1)}else if(s.life<=0){combo=1;signals.splice(i,1)}s.life-=dt*.00025}for(let i=bits.length-1;i>=0;i--){let b=bits[i];b.x+=b.vx;b.y+=b.vy;b.vx*=.94;b.vy*=.94;b.life-=dt*.002;if(b.life<=0)bits.splice(i,1)}}
+function drawSignals(){for(const s of signals){x.globalAlpha=s.life; x.beginPath();x.arc(s.x,s.y,s.r+7,0,Math.PI*2);x.strokeStyle='rgba(255,0,180,.25)';x.stroke();x.beginPath();x.arc(s.x,s.y,s.r,0,Math.PI*2);x.strokeStyle='#ff00b8';x.shadowBlur=18;x.shadowColor='#ff00b8';x.stroke();x.shadowBlur=0;x.fillStyle='#fff';x.fillRect(s.x-2,s.y-2,4,4)}x.globalAlpha=1;for(const b of bits){x.globalAlpha=b.life;x.fillStyle='#00ffff';x.fillRect(b.x,b.y,3,3)}x.globalAlpha=1}
+function loop(t){let dt=Math.min(32,t-last||16);last=t;drawBackground(t);if(playing)update(dt,t);drawSignals();core(t);scoreEl.textContent=score;comboEl.textContent='x'+combo;energyEl.style.width=Math.max(0,energy)+'%';energyEl.classList.toggle('danger',energy<25);requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
